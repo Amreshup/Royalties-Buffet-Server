@@ -12,8 +12,8 @@ const jwt = require('jsonwebtoken');
 app.use(cors({
   origin: 'http://localhost:5173', // Allow requests from this origin
   methods: ['GET', 'POST'], // Allow only GET and POST requests
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers  
-));
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+}));
 app.use(express.json());
 
 mongoose
