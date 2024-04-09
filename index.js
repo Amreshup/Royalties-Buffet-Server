@@ -9,11 +9,7 @@ const stripe = require("stripe")('sk_test_51Ot2QtSIBQZVLj4aFkVnAl3ZZz0Z53rq5RM8m
 const jwt = require('jsonwebtoken');
 
 // middleware
-app.use(cors({
-  origin: 'http://localhost:5173', // Allow requests from this origin
-  methods: ['GET', 'POST'], // Allow only GET and POST requests
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
-}));
+app.use(cors());
 app.use(express.json());
 
 mongoose
