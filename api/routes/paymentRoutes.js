@@ -141,30 +141,32 @@ router.delete('/:id', verifyToken, async (req, res) => {
 
 // Handle Cash on Delivery payment
 router.post('/cash-on-delivery', async (req, res) => {
-  const { email, price, cart, address } = req.body;
-
-  try {
-    // Create a new payment record
-    const payment = await Payment.create({
-      email,
-      transitionId: "Cash on delivery", // For COD payments
-      price,
-      status: "Order Pending",
-      quantity: cart.length,
-      address,
-      itemsName: cart.map(item => item.name),
-      cartItems: cart.map(item => item._id),
-      menuItems: cart.map(item => item.menuItemId)
-    });
-
-     // Clear the user's cart after a successful cash-on-delivery order
-     await Cart.deleteMany({ user: email });
-
-    res.status(201).json({ success: true, payment });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
+    const { email, price, cart, address } = req.body;
+  
+    try {
+      // Create a new payment record with transactionId set to "Cash on delivery"
+      const payment = await Payment.create({
+        email,
+        transitionId: "Cash on delivery", // Set transactionId to "Cash on delivery"
+        price,
+        status: "Order Pending",
+        quantity: cart.length,
+        address,
+        itemsName: cart.map(item => item.name),
+        cartItems: cart.map(item => item._id),
+        menuItems: cart.map(item => item.menuItemId)
+      });
+      console.log(payment)
+      // Delete items from the cart
+      const cartIds = payment.cartItems.map(id => new ObjectId(id));
+      const deleteResult = await Cart.deleteMany({ _id: { $in: cartIds } });
+  
+      // Send response with payment information
+      res.status(201).json({ success: true, payment, deleteResult });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  });
 
 
 module.exports = router;
